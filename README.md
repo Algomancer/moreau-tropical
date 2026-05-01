@@ -6,6 +6,16 @@ a smooth, sparse, learnable max. one knob slides from max to mean. fused. idk th
 y = MoreauTropicalKernel(in_features=512, out_features=1024, lam=1.0)(x)
 ```
 
+
+llm tldr;
+
+```
+This layer gives a sparse, differentiable relaxation of max-plus/tropical linear maps. It keeps the useful max-selection bias of tropical networks, but replaces hard argmax routing with a Moreau-smoothed simplex projection whose active set is sparse and whose gradients are stable. The Triton kernel is what makes the construction practical: it avoids materializing the (B,N,D) optimizer p
+∗
+, storing only one threshold τ per output and recomputing the sparse weights during backward. In effect, it is a FlashAttention-style implementation of a sparse tropical layer.
+```
+
+
 ## what is
 
 each output is
