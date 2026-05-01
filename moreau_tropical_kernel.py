@@ -398,19 +398,12 @@ class MoreauTropicalKernelFn(torch.autograd.Function):
     @staticmethod
     def backward(ctx, grad_y: Tensor):
         x, W, lam, tau, delta = ctx.saved_tensors
-        # All three calls are inside no_grad context (autograd is off in backward).
         grad_x = moreau_tropical_grad_x(x, W, lam, tau, grad_y)
         grad_W = moreau_tropical_grad_W(x, W, lam, tau, grad_y)
         grad_lam = moreau_tropical_grad_lam(grad_y, delta, lam)
-        # Match upstream lam dtype (helper returns fp32; user lam may be other).
         if grad_lam.dtype != lam.dtype:
             grad_lam = grad_lam.to(lam.dtype)
         return grad_x, grad_W, grad_lam
-
-
-# ---------------------------------------------------------------------------
-# nn.Module wrap — mirrors moreau_tropical.MoreauTropical exactly
-# ---------------------------------------------------------------------------
 
 
 class MoreauTropicalKernel(nn.Module):
