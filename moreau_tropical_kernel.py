@@ -97,8 +97,7 @@ def moreau_tropical_forward(
         W: ``(N, D)`` cuda tensor, same dtype as ``x``.
         lam: scalar (positive) — Tensor or float.
         n_bisect: bisection iterations; the default ``32`` sits at the
-            fp32-ulp agreement floor with the sort-based reference (see
-            ``bench_n_bisect.py``).
+            fp32-ulp agreement floor
 
     Returns:
         ``(y, tau, delta)`` where
@@ -151,12 +150,6 @@ def moreau_tropical_forward(
         N_BISECT=n_bisect,
     )
     return y, tau, delta
-
-
-# ---------------------------------------------------------------------------
-# Backward kernel: ∂L/∂x  — reduces over N
-# ---------------------------------------------------------------------------
-
 
 @triton.jit
 def _moreau_grad_x_kernel(
@@ -213,15 +206,7 @@ def moreau_tropical_grad_x(
     grad_y: Tensor,
     block_n: int = 128,
 ) -> Tensor:
-    """``∂L/∂x = ∑_n grad_y[b,n] · p*[b,n,d]``  via Triton, recomputed from τ.
 
-    Args:
-        x: ``(B, D)``, W: ``(N, D)``, lam: scalar, tau: ``(B, N)`` fp32 (saved
-        from the forward), grad_y: ``(B, N)`` (input dtype matches x/W).
-
-    Returns:
-        ``grad_x: (B, D)``, same dtype as ``x``.
-    """
     _check_bwd_inputs(x, W, lam, tau, grad_y)
     B, D = x.shape
     N, _ = W.shape
