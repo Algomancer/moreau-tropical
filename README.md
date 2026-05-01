@@ -40,7 +40,7 @@ $\lambda$ is differentiable. let the optimizer pick. envelope theorem one-shots 
 
 triton-fused forward, two triton backward kernels, envelope-theorem trick for $\partial L / \partial \lambda$ that needs no kernel because the math hands it to you.
 
-girlie saves $(B, N)$ — just $\tau$ — and recomputes $p^*$ on the fly. same trade flashattention makes for softmax stats.
+girlie saves $(B, N)$ just $\tau$ and recomputes $p^*$ on the fly. same trade flashattention makes for softmax stats.
 
 ## use it
 
